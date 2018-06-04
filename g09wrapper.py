@@ -208,5 +208,5 @@ if __name__ == '__main__':
         job.check_status()
         LOG.info('Status for job_id=%s: %s', job.job_id, job.job_status)
     job.download_files()
-    LOG.infor('Gaussian job %s complete', args.filename)
+    LOG.info('Gaussian job %s complete', args.filename)
     sys.exit(0)
