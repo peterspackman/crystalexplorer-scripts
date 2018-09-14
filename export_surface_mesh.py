@@ -70,10 +70,10 @@ def colormap(prop, scheme='d_norm'):
     return colors
 
 
-def export_mesh(verts, faces, normals, colors, args):
+def get_mesh(verts, faces, normals, colors):
     surface = trimesh.Trimesh(vertices=verts, faces=faces,
                               vertex_normals=normals, vertex_colors=colors)
-    surface.export('surface.{}'.format(args.output_format))
+    return surface
 
 
 def main():
@@ -81,24 +81,27 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('surface_files', nargs='+',
                         help='CrystalExplorer surface files in .sbf format')
-    parser.add_argument('-p', '--property', default='d_norm',
+    parser.add_argument('--property', default='d_norm',
                         choices=('d_norm', 'd_e', 'd_i', 'curvedness', 'shape_index'),
                         help='Property to color surfaces by')
-    parser.add_argument('-f', '--output-format', default='obj',
+    parser.add_argument('--output-format', default='obj',
                         choices=trimesh.io.export._mesh_exporters.keys(),
-                        help='Property to color surfaces by')
+                        help='Output file format')
 
     args = parser.parse_args()
     for filename in args.surface_files:
         f = sbf.read_file(filename)
         prop = f[args.property].data
-        print(args.property, prop)
-        print(prop.min(), prop.max())
+        name = '.'.join(filename.split('.')[:-1])
+        output = '{}.{}'.format(name, args.output_format)
+        print("Exporting {} using surface property '{}'".format(
+              output, args.property))
         colors = colormap(prop, scheme=args.property)
         vertices = f['vertices'].data.transpose()
         faces = f['faces'].data.transpose() - 1
         normals = f['vertex normals'].data.transpose()
-        export_mesh(vertices, faces, normals, colors, args)
+        mesh = get_mesh(vertices, faces, normals, colors)
+        mesh.export(output)
 
 
 
