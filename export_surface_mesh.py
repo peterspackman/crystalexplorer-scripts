@@ -49,9 +49,9 @@ def cmap(value, vmin, vmax, start, mid, end):
     return res
 
 
-def colormap(prop, scheme='d_norm'):
-    vmin = prop.min()
-    vmax = prop.max()
+def colormap(prop, scheme='d_norm', minval=None, maxval=None):
+    vmin = minval if minval else prop.min()
+    vmax = maxval if maxval else prop.max()
 
     colors = np.zeros((prop.shape[0], 3), dtype=np.float32)
 
@@ -84,6 +84,10 @@ def main():
     parser.add_argument('--property', default='d_norm',
                         choices=('d_norm', 'd_e', 'd_i', 'curvedness', 'shape_index'),
                         help='Property to color surfaces by')
+    parser.add_argument('--property-min', default=None, type=float,
+                        help='Minimum property value for coloring')
+    parser.add_argument('--property-max', default=None, type=float,
+                        help='Maximum property value for coloring')
     parser.add_argument('--output-format', default='obj',
                         choices=trimesh.io.export._mesh_exporters.keys(),
                         help='Output file format')
@@ -96,7 +100,9 @@ def main():
         output = '{}.{}'.format(name, args.output_format)
         print("Exporting {} using surface property '{}'".format(
               output, args.property))
-        colors = colormap(prop, scheme=args.property)
+        colors = colormap(prop, scheme=args.property,
+                          minval=args.property_min,
+                          maxval=args.property_max)
         vertices = f['vertices'].data.transpose()
         faces = f['faces'].data.transpose() - 1
         normals = f['vertex normals'].data.transpose()
