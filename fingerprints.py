@@ -32,7 +32,7 @@ def main():
     c = axes[1].pcolormesh(X, Y, H2, cmap='coolwarm')
     axes[1].set_title(args.surface_file2)
     c = axes[2].pcolormesh(X, Y, H1-H2, cmap='coolwarm')
-    axes[2].set_title(args.surface_file1)
+    axes[2].set_title('difference')
     for ax in axes:
         ax.set_xlabel(r'$d_i$')
         ax.set_ylabel(r'$d_e$')
