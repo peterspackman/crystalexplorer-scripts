@@ -106,6 +106,8 @@ CPU time taken for job "Group1_Group2" is 0.001 CPU seconds.
 
 ******************************************************************************
 THIS IS A PLACEHOLDER STDOUT FILE FOR LATTICE ENERGIES WHEN USING tonto_hpc.py
+Additional files will be written to:
+{directory}
 ******************************************************************************
 """
 
@@ -166,7 +168,9 @@ def check_cache(input_contents):
             f.write(input_contents)
         copy_wavefunctions(input_contents, output_directory)
         with open('stdout', 'w') as f:
-            f.write(PLACEHOLDER_STDOUT)
+            f.write(PLACEHOLDER_STDOUT.format(
+                directory=os.path.abspath(output_directory))
+            )
 
 def is_interaction_energy_input(contents):
     return 'put_group_12_energies' in contents
