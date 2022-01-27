@@ -41,12 +41,14 @@ def main():
                     f.write(f"      {tokens[0]}:{basis_name} {{")
                     new_section = False
                 else:
-                    tokens = lstrip.split()
                     if lstrip[0] in SHELL_KEYS:
-                        f.write(f"      {tokens[1]} {tokens[0]}")
+                        tokens = lstrip.lower().split()
+                        f.write(f"      {tokens[1]}   {tokens[0]}")
                     else:
-                        alpha, exp = tokens[0], tokens[1]
-                        f.write(f"         {alpha:20s}    {exp:20s}")
+                        lstrip = lstrip.lower().replace("d", "e")
+                        tokens = lstrip.split()
+                        alpha, exp = float(tokens[0]), float(tokens[1])
+                        f.write(f"         {alpha:20.12f}    {exp:20.12f}")
 
             f.write("\n")
         f.write("   }\n}\n")
